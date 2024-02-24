@@ -13,13 +13,15 @@ export default function Home() {
 
   const submit = () => {
     if (query !== '') {
-      let encoded = ''
-      encoded = '\\u' + query.charCodeAt(0).toString(16).padStart(4, '0')
+      console.log('\\u' + query.charCodeAt(0).toString(16))
+      const regularIndex = Object.values(Dictionary['character']).findIndex((character) => character === query)
+      setRegular(Dictionary['code'][regularIndex.toString() as keyof (typeof Dictionary)['code']])
 
-      const regularIndex = Object.values(Dictionary['character']).find((index) => Dictionary['character'][index as keyof typeof Dictionary['character']] === encoded)
-      console.log(encoded)
-      console.log(regularIndex)
-      setRegular(Dictionary['code'][regularIndex as keyof typeof Dictionary['code']])
+      const shortIndex = Object.values(Short['character']).findIndex((character) => character === query)
+      setShort(Short['code'][shortIndex.toString() as keyof (typeof Short)['code']])
+
+      const SpecialIndex = Object.values(Special['character']).findIndex((character) => character === query)
+      setSpecial(Special['code'][SpecialIndex.toString() as keyof (typeof Special)['code']])
     }
   }
 
