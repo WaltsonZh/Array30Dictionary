@@ -4,6 +4,7 @@ import { useState } from 'react'
 import * as Dictionary from '../assets/dictionary/Dictionary.json'
 import * as Short from '../assets/dictionary/Short.json'
 import * as Special from '../assets/dictionary/Special.json'
+import * as KeyConvert from '../assets/dictionary/KeyConvert.json'
 
 export default function Home() {
   const [query, setQuery] = useState<string>('')
@@ -14,15 +15,24 @@ export default function Home() {
   const submit = () => {
     if (query !== '') {
       console.log('\\u' + query.charCodeAt(0).toString(16))
-      const regularIndex = Object.values(Dictionary['character']).findIndex((character) => character === query)
-      setRegular(Dictionary['code'][regularIndex.toString() as keyof (typeof Dictionary)['code']])
+      const regularIndex = Object.values(Dictionary.character).findIndex((character) => character === query)
+      setRegular(Dictionary.code[regularIndex.toString() as keyof typeof Dictionary.code])
 
-      const shortIndex = Object.values(Short['character']).findIndex((character) => character === query)
-      setShort(Short['code'][shortIndex.toString() as keyof (typeof Short)['code']])
+      const shortIndex = Object.values(Short.character).findIndex((character) => character === query)
+      setShort(Short.code[shortIndex.toString() as keyof typeof Short.code])
 
-      const SpecialIndex = Object.values(Special['character']).findIndex((character) => character === query)
-      setSpecial(Special['code'][SpecialIndex.toString() as keyof (typeof Special)['code']])
+      const SpecialIndex = Object.values(Special.character).findIndex((character) => character === query)
+      setSpecial(Special.code[SpecialIndex.toString() as keyof typeof Special.code])
     }
+  }
+
+  const converted = (str: string) => {
+    const result = []
+    for (let char of str) {
+      const index = KeyConvert.characters.indexOf(char)
+      result.push(KeyConvert.prompt[index])
+    }
+    return result
   }
 
   return (
@@ -31,9 +41,18 @@ export default function Home() {
       <TouchableOpacity style={styles.button} onPress={submit}>
         <Text style={styles.text}>查碼</Text>
       </TouchableOpacity>
-      {regular ? <Text style={styles.text}>普：{regular}</Text> : null}
-      {short ? <Text style={styles.text}>簡：{short}</Text> : null}
-      {special ? <Text style={styles.text}>特：{special}</Text> : null}
+      {regular ? (
+        <View style={styles.result}>
+          <Text style={styles.text}>
+            普：
+            {converted(regular).map((prompt) => (
+              <Text style={styles.text}>{prompt}</Text>
+            ))}
+          </Text>
+        </View>
+      ) : null}
+      {short ? <Text style={styles.text}>簡：{converted(short)}</Text> : null}
+      {special ? <Text style={styles.text}>特：{converted(special)}</Text> : null}
     </View>
   )
 }
@@ -65,5 +84,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+  },
+  result: {
+    flexDirection: 'row',
+    gap: 4,
   },
 })
