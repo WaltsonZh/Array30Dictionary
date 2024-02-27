@@ -45,8 +45,8 @@ export default function Home() {
         <View style={styles.result}>
           <Text style={styles.text}>
             普：
-            {converted(regular).map((prompt) => (
-              <Text style={styles.text}>{prompt}</Text>
+            {converted(regular).map((prompt, index) => (
+              <Text key={index} style={styles.text}>{prompt}</Text>
             ))}
           </Text>
         </View>
